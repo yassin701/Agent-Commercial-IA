@@ -8,44 +8,32 @@ export default {
     extend: {
       colors: {
         primary: {
-          DEFAULT: '#1a5f3f',
-          dark: '#0f3d28',
-          light: '#2d7a5a',
+          DEFAULT: '#2563EB', // Royal Blue
+          dark: '#1d4ed8',
+          light: '#3b82f6',
         },
-        secondary: {
-          DEFAULT: '#d4a574',
-          light: '#e8c9a0',
-          dark: '#b8915a',
-        },
-        accent: {
-          DEFAULT: '#f5f1eb',
-          dark: '#e8e0d6',
+        secondary: '#64748B', // Slate 500
+        background: '#F8FAFC', // Slate 50
+        surface: '#FFFFFF',
+        'text-main': '#0F172A',   // Slate 900
+        text: {
+          main: '#0F172A',   // Slate 900
+          muted: '#64748B',  // Slate 500
+          light: '#F8FAFC',
         }
       },
       fontFamily: {
-        sans: ['Inter', 'system-ui', 'sans-serif'],
+        sans: ['"Plus Jakarta Sans"', 'sans-serif'],
       },
-      animation: {
-        'fade-in': 'fadeIn 0.5s ease-in',
-        'slide-up': 'slideUp 0.5s ease-out',
-        'slide-down': 'slideDown 0.3s ease-out',
+      borderRadius: {
+        DEFAULT: '1rem',
+        'xl': '1rem',
+        '2xl': '1.5rem',
       },
-      keyframes: {
-        fadeIn: {
-          '0%': { opacity: '0' },
-          '100%': { opacity: '1' },
-        },
-        slideUp: {
-          '0%': { transform: 'translateY(20px)', opacity: '0' },
-          '100%': { transform: 'translateY(0)', opacity: '1' },
-        },
-        slideDown: {
-          '0%': { transform: 'translateY(-10px)', opacity: '0' },
-          '100%': { transform: 'translateY(0)', opacity: '1' },
-        },
-      },
+      boxShadow: {
+        'soft': '0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03)',
+      }
     },
   },
   plugins: [],
 }
-
