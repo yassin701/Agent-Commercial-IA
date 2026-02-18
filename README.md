@@ -1,4 +1,4 @@
-# Agent Commercial IA - Souk Digital
+# Agent Commercial IA - Souk Digitall
 
 Une plateforme complète d'agent commercial IA pour le e-commerce, transposant l'âme du souk marocain traditionnel dans le monde numérique.
 
