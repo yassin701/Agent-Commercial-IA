@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Search, CheckCircle2, Clock, Package, Truck, CheckCircle } from 'lucide-react';
+import { Search, CheckCircle2, Clock, CheckCircle } from 'lucide-react';
 import { gsap } from 'gsap';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
@@ -24,16 +24,16 @@ const TrackOrder = () => {
     items: [
       {
         id: 1,
-        name: 'SilkSculpt Serum',
-        image: 'https://images.unsplash.com/photo-1556228578-0d85b1a4d571?w=100&h=100&fit=crop',
-        price: 35.00,
+        name: 'Green Detox Elixir',
+        image: 'https://images.unsplash.com/photo-1610970881699-44a5587cabec?w=100&h=100&fit=crop',
+        price: 8.50,
         quantity: 2,
       },
       {
         id: 2,
-        name: 'Argan Glow',
-        image: 'https://images.unsplash.com/photo-1598440947619-2c35fc9aa908?w=100&h=100&fit=crop',
-        price: 28.00,
+        name: 'Berry Blast Energy',
+        image: 'https://images.unsplash.com/photo-1621506289937-a8e4df240d0b?w=100&h=100&fit=crop',
+        price: 9.00,
         quantity: 1,
       },
     ],
@@ -44,7 +44,7 @@ const TrackOrder = () => {
       postalCode: '20000',
       country: 'Maroc',
     },
-    total: 98.00,
+    total: 26.00,
     shippingDate: '2024-01-16',
     estimatedDelivery: '2024-01-20',
   };
@@ -54,8 +54,8 @@ const TrackOrder = () => {
     const trackForm = document.querySelector('.track-form');
     if (trackForm) {
       gsap.fromTo('.track-form',
-        { y: 30 },
-        { y: 0, duration: 0.6 }
+        { y: 30, opacity: 0 },
+        { y: 0, opacity: 1, duration: 0.6, ease: 'power2.out' }
       );
     }
   }, []);
@@ -65,7 +65,7 @@ const TrackOrder = () => {
     if (!orderNumber || !email) return;
 
     setIsLoading(true);
-    
+
     // Simulate API call
     setTimeout(() => {
       // In production, this would call your n8n webhook to fetch order from Google Sheets
@@ -75,7 +75,7 @@ const TrackOrder = () => {
       //   body: JSON.stringify({ orderNumber, email }),
       // });
       // const data = await response.json();
-      
+
       if (orderNumber === 'ORD-2024-001234' && email === 'client@example.com') {
         setOrder(mockOrder);
         // Animate order details after state update
@@ -83,8 +83,8 @@ const TrackOrder = () => {
           const orderDetails = document.querySelector('.order-details');
           if (orderDetails) {
             gsap.fromTo('.order-details',
-              { y: 30 },
-              { y: 0, duration: 0.6 }
+              { y: 30, opacity: 0 },
+              { y: 0, opacity: 1, duration: 0.6, ease: 'power2.out' }
             );
           }
         }, 0);
@@ -124,9 +124,9 @@ const TrackOrder = () => {
   };
 
   return (
-    <div className="min-h-screen bg-accent">
+    <div className="min-h-screen bg-gray-50">
       <Header />
-      
+
       {/* Page Title */}
       <div className="bg-white py-12">
         <div className="container mx-auto px-4 text-center">

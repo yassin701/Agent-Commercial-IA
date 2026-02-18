@@ -19,31 +19,37 @@ const FilterSidebar = ({ filters, onFilterChange, onClearAll }) => {
   };
 
   const activeFilters = [
-    filters.priceRange && `Price: $${filters.priceRange.min}-$${filters.priceRange.max}`,
+    filters.priceRange && (filters.priceRange.min > 0 || filters.priceRange.max < 200) && `Prix: $${filters.priceRange.min}-$${filters.priceRange.max}`,
     filters.promotions?.includes('best-sellers') && 'Best Seller',
     filters.availability?.includes('in-stock') && 'In Stock',
   ].filter(Boolean);
 
   return (
-    <div className="bg-white rounded-2xl p-6 shadow-premium border border-gray-100 sticky top-24">
+    <div className="bg-white">
       <div className="flex items-center justify-between mb-6">
-        <h2 className="text-2xl font-bold text-gray-900">Options de Filtre</h2>
+        <h2 className="text-lg font-bold text-gray-900">Filtres</h2>
+        <button
+          onClick={onClearAll}
+          className="text-sm text-primary hover:text-primary-dark font-medium transition-colors"
+        >
+          Tout effacer
+        </button>
       </div>
 
       {/* Active Filters */}
       {activeFilters.length > 0 && (
-        <div className="mb-6 pb-6 border-b">
-          <div className="flex flex-wrap gap-2 mb-3">
+        <div className="mb-6 pb-6 border-b border-gray-100">
+          <div className="flex flex-wrap gap-2">
             {activeFilters.map((filter, index) => (
               <span
                 key={index}
-                className="inline-flex items-center gap-2 px-3 py-1 bg-accent text-gray-700 rounded-full text-sm"
+                className="inline-flex items-center gap-2 px-3 py-1 bg-blue-50 text-primary rounded-full text-xs font-semibold"
               >
                 {filter}
                 <button
                   onClick={() => {
-                    if (filter.includes('Price')) {
-                      onFilterChange({ priceRange: null });
+                    if (filter.includes('Prix')) {
+                      onFilterChange({ priceRange: { min: 0, max: 200 } });
                     } else if (filter === 'Best Seller') {
                       onFilterChange({
                         promotions: filters.promotions?.filter(p => p !== 'best-sellers') || []
@@ -54,74 +60,43 @@ const FilterSidebar = ({ filters, onFilterChange, onClearAll }) => {
                       });
                     }
                   }}
-                  className="hover:text-primary"
+                  className="hover:text-primary-dark"
                 >
                   <X className="w-3 h-3" />
                 </button>
               </span>
             ))}
           </div>
-          <button
-            onClick={onClearAll}
-            className="text-sm text-primary hover:text-primary-dark font-medium"
-          >
-            Tout effacer
-          </button>
         </div>
       )}
 
       {/* Categories */}
-      <div className="mb-6">
+      <div className="mb-6 pb-6 border-b border-gray-100">
         <button
           onClick={() => toggleSection('categories')}
-          className="w-full flex items-center justify-between mb-4 font-semibold text-gray-900"
+          className="w-full flex items-center justify-between mb-3 font-semibold text-gray-900 hover:text-primary transition-colors"
         >
-          <span>Par Catégories</span>
-          {openSections.categories ? <ChevronUp className="w-5 h-5" /> : <ChevronDown className="w-5 h-5" />}
+          <span>Catégories</span>
+          {openSections.categories ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
         </button>
         {openSections.categories && (
-          <div className="space-y-2">
-            {['Skin Care', 'Makeup', 'Hair Care', 'Fragrances', 'Nail Care', 'Body Care'].map((category) => (
-              <label key={category} className="flex items-center gap-2 cursor-pointer">
-                <input
-                  type="checkbox"
-                  checked={filters.categories?.includes(category) || false}
-                  onChange={(e) => {
-                    const newCategories = e.target.checked
-                      ? [...(filters.categories || []), category]
-                      : (filters.categories || []).filter(c => c !== category);
-                    onFilterChange({ categories: newCategories });
-                  }}
-                  className="w-4 h-4 text-primary rounded focus:ring-primary"
-                />
-                <span className="text-gray-700">{category}</span>
-              </label>
-            ))}
-          </div>
-        )}
-      </div>
-
-      {/* Skin Type */}
-      <div className="mb-6">
-        <button
-          onClick={() => toggleSection('skinType')}
-          className="w-full flex items-center justify-between mb-4 font-semibold text-gray-900"
-        >
-          <span>Par Type de Peau</span>
-          {openSections.skinType ? <ChevronUp className="w-5 h-5" /> : <ChevronDown className="w-5 h-5" />}
-        </button>
-        {openSections.skinType && (
-          <div className="space-y-2">
-            {['Normal', 'Oily', 'Dry', 'Combination', 'Sensitive'].map((type) => (
-              <label key={type} className="flex items-center gap-2 cursor-pointer">
-                <input
-                  type="radio"
-                  name="skinType"
-                  checked={filters.skinType === type}
-                  onChange={() => onFilterChange({ skinType: type })}
-                  className="w-4 h-4 text-primary focus:ring-primary"
-                />
-                <span className="text-gray-700">{type}</span>
+          <div className="space-y-2.5">
+            {['Skin Care', 'Makeup', 'Hair Care', 'Fragrances', 'Body Care'].map((category) => (
+              <label key={category} className="flex items-center gap-3 cursor-pointer group">
+                <div className="relative flex items-center">
+                  <input
+                    type="checkbox"
+                    checked={filters.categories?.includes(category) || false}
+                    onChange={(e) => {
+                      const newCategories = e.target.checked
+                        ? [...(filters.categories || []), category]
+                        : (filters.categories || []).filter(c => c !== category);
+                      onFilterChange({ categories: newCategories });
+                    }}
+                    className="peer w-4 h-4 border-2 border-gray-300 rounded text-primary focus:ring-primary focus:ring-offset-0 transition-all checked:border-primary"
+                  />
+                </div>
+                <span className="text-gray-600 group-hover:text-gray-900 transition-colors text-sm">{category}</span>
               </label>
             ))}
           </div>
@@ -129,34 +104,35 @@ const FilterSidebar = ({ filters, onFilterChange, onClearAll }) => {
       </div>
 
       {/* Price Range */}
-      <div className="mb-6">
+      <div className="mb-6 pb-6 border-b border-gray-100">
         <button
           onClick={() => toggleSection('price')}
-          className="w-full flex items-center justify-between mb-4 font-semibold text-gray-900"
+          className="w-full flex items-center justify-between mb-3 font-semibold text-gray-900 hover:text-primary transition-colors"
         >
           <span>Prix</span>
-          {openSections.price ? <ChevronUp className="w-5 h-5" /> : <ChevronDown className="w-5 h-5" />}
+          {openSections.price ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
         </button>
         {openSections.price && (
-          <div>
+          <div className="px-1">
             <input
               type="range"
-              min="10"
-              max="100"
-              value={filters.priceRange?.max || 100}
+              min="0"
+              max="200"
+              step="5"
+              value={filters.priceRange?.max || 200}
               onChange={(e) => {
                 onFilterChange({
                   priceRange: {
-                    min: filters.priceRange?.min || 10,
+                    min: filters.priceRange?.min || 0,
                     max: parseInt(e.target.value)
                   }
                 });
               }}
-              className="w-full"
+              className="w-full h-1.5 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-primary"
             />
-            <div className="flex justify-between text-sm text-gray-600 mt-2">
-              <span>${filters.priceRange?.min || 10}.00</span>
-              <span>${filters.priceRange?.max || 100}.00</span>
+            <div className="flex justify-between text-sm text-gray-500 font-medium mt-3">
+              <span>$0</span>
+              <span className="text-primary">${filters.priceRange?.max || 200}</span>
             </div>
           </div>
         )}
@@ -166,15 +142,15 @@ const FilterSidebar = ({ filters, onFilterChange, onClearAll }) => {
       <div className="mb-6">
         <button
           onClick={() => toggleSection('review')}
-          className="w-full flex items-center justify-between mb-4 font-semibold text-gray-900"
+          className="w-full flex items-center justify-between mb-3 font-semibold text-gray-900 hover:text-primary transition-colors"
         >
           <span>Note</span>
-          {openSections.review ? <ChevronUp className="w-5 h-5" /> : <ChevronDown className="w-5 h-5" />}
+          {openSections.review ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
         </button>
         {openSections.review && (
           <div className="space-y-2">
             {[5, 4, 3, 2, 1].map((stars) => (
-              <label key={stars} className="flex items-center gap-2 cursor-pointer">
+              <label key={stars} className="flex items-center gap-3 cursor-pointer group">
                 <input
                   type="checkbox"
                   checked={filters.reviews?.includes(stars) || false}
@@ -184,73 +160,24 @@ const FilterSidebar = ({ filters, onFilterChange, onClearAll }) => {
                       : (filters.reviews || []).filter(r => r !== stars);
                     onFilterChange({ reviews: newReviews });
                   }}
-                  className="w-4 h-4 text-primary rounded focus:ring-primary"
+                  className="peer w-4 h-4 border-2 border-gray-300 rounded text-primary focus:ring-primary focus:ring-offset-0 transition-all checked:border-primary"
                 />
-                <span className="text-gray-700">{stars} Étoiles</span>
-              </label>
-            ))}
-          </div>
-        )}
-      </div>
-
-      {/* Promotions */}
-      <div className="mb-6">
-        <button
-          onClick={() => toggleSection('promotions')}
-          className="w-full flex items-center justify-between mb-4 font-semibold text-gray-900"
-        >
-          <span>Par Promotions</span>
-          {openSections.promotions ? <ChevronUp className="w-5 h-5" /> : <ChevronDown className="w-5 h-5" />}
-        </button>
-        {openSections.promotions && (
-          <div className="space-y-2">
-            {['New Arrivals', 'Best Sellers', 'On Sale'].map((promo) => (
-              <label key={promo} className="flex items-center gap-2 cursor-pointer">
-                <input
-                  type="checkbox"
-                  checked={filters.promotions?.includes(promo.toLowerCase().replace(' ', '-')) || false}
-                  onChange={(e) => {
-                    const promoKey = promo.toLowerCase().replace(' ', '-');
-                    const newPromotions = e.target.checked
-                      ? [...(filters.promotions || []), promoKey]
-                      : (filters.promotions || []).filter(p => p !== promoKey);
-                    onFilterChange({ promotions: newPromotions });
-                  }}
-                  className="w-4 h-4 text-primary rounded focus:ring-primary"
-                />
-                <span className="text-gray-700">{promo}</span>
-              </label>
-            ))}
-          </div>
-        )}
-      </div>
-
-      {/* Availability */}
-      <div>
-        <button
-          onClick={() => toggleSection('availability')}
-          className="w-full flex items-center justify-between mb-4 font-semibold text-gray-900"
-        >
-          <span>Disponibilité</span>
-          {openSections.availability ? <ChevronUp className="w-5 h-5" /> : <ChevronDown className="w-5 h-5" />}
-        </button>
-        {openSections.availability && (
-          <div className="space-y-2">
-            {['In Stock', 'Out of Stocks'].map((availability) => (
-              <label key={availability} className="flex items-center gap-2 cursor-pointer">
-                <input
-                  type="checkbox"
-                  checked={filters.availability?.includes(availability.toLowerCase().replace(' ', '-')) || false}
-                  onChange={(e) => {
-                    const availKey = availability.toLowerCase().replace(' ', '-');
-                    const newAvailability = e.target.checked
-                      ? [...(filters.availability || []), availKey]
-                      : (filters.availability || []).filter(a => a !== availKey);
-                    onFilterChange({ availability: newAvailability });
-                  }}
-                  className="w-4 h-4 text-primary rounded focus:ring-primary"
-                />
-                <span className="text-gray-700">{availability}</span>
+                <div className="flex items-center gap-1">
+                  {[...Array(5)].map((_, i) => (
+                    <svg
+                      key={i}
+                      className={`w-3.5 h-3.5 ${i < stars ? 'text-yellow-400 fill-current' : 'text-gray-300'}`}
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                    >
+                      <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+                    </svg>
+                  ))}
+                  <span className="text-gray-400 text-xs ml-1 group-hover:text-gray-600">& Plus</span>
+                </div>
               </label>
             ))}
           </div>
