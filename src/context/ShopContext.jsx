@@ -6,13 +6,25 @@ export const useShop = () => useContext(ShopContext);
 
 export const ShopProvider = ({ children }) => {
     const [wishlist, setWishlist] = useState(() => {
-        const savedWishlist = localStorage.getItem('wishlist');
-        return savedWishlist ? JSON.parse(savedWishlist) : [];
+        try {
+            const savedWishlist = localStorage.getItem('wishlist');
+            const parsed = savedWishlist ? JSON.parse(savedWishlist) : [];
+            return Array.isArray(parsed) ? parsed : [];
+        } catch (e) {
+            console.error('Error parsing wishlist from localStorage:', e);
+            return [];
+        }
     });
 
     const [cart, setCart] = useState(() => {
-        const savedCart = localStorage.getItem('cart');
-        return savedCart ? JSON.parse(savedCart) : [];
+        try {
+            const savedCart = localStorage.getItem('cart');
+            const parsed = savedCart ? JSON.parse(savedCart) : [];
+            return Array.isArray(parsed) ? parsed : [];
+        } catch (e) {
+            console.error('Error parsing cart from localStorage:', e);
+            return [];
+        }
     });
 
     const [quickViewProduct, setQuickViewProduct] = useState(null);
@@ -29,8 +41,8 @@ export const ShopProvider = ({ children }) => {
     }, [cart]);
 
     // Derived counts
-    const cartCount = cart.reduce((total, item) => total + item.quantity, 0);
-    const wishlistCount = wishlist.length;
+    const cartCount = Array.isArray(cart) ? cart.reduce((total, item) => total + (item.quantity || 0), 0) : 0;
+    const wishlistCount = Array.isArray(wishlist) ? wishlist.length : 0;
 
     // Drawers
     const toggleCart = () => setIsCartOpen(!isCartOpen);
@@ -38,15 +50,16 @@ export const ShopProvider = ({ children }) => {
 
     const addToWishlist = (product) => {
         setWishlist((prev) => {
-            if (!prev.find((item) => item.id === product.id)) {
-                return [...prev, product];
+            const currentWishlist = Array.isArray(prev) ? prev : [];
+            if (!currentWishlist.find((item) => item.id === product.id)) {
+                return [...currentWishlist, product];
             }
-            return prev;
+            return currentWishlist;
         });
     };
 
     const removeFromWishlist = (productId) => {
-        setWishlist((prev) => prev.filter((item) => item.id !== productId));
+        setWishlist((prev) => (Array.isArray(prev) ? prev : []).filter((item) => item.id !== productId));
     };
 
     const toggleWishlist = (product) => {
@@ -63,32 +76,32 @@ export const ShopProvider = ({ children }) => {
 
     const addToCart = (product, quantity = 1, priceOverride = null) => {
         setCart((prev) => {
-            const existingItem = prev.find((item) => item.id === product.id);
+            const currentCart = Array.isArray(prev) ? prev : [];
+            const existingItem = currentCart.find((item) => item.id === product.id);
             if (existingItem) {
-                return prev.map((item) =>
+                return currentCart.map((item) =>
                     item.id === product.id
                         ? {
                             ...item,
                             quantity: item.quantity + quantity,
-                            // Update price if override provided, otherwise keep existing
                             price: priceOverride || item.price,
                             negotiatedPrice: priceOverride || item.negotiatedPrice
                         }
                         : item
                 );
             }
-            return [...prev, {
+            return [...currentCart, {
                 ...product,
                 quantity,
                 price: priceOverride || product.price,
-                negotiatedPrice: priceOverride || product.negotiatedPrice // Store specifically for chat logic
+                negotiatedPrice: priceOverride || product.negotiatedPrice
             }];
         });
         if (!isCartOpen) setIsCartOpen(true); // Auto open cart
     };
 
     const removeFromCart = (productId) => {
-        setCart((prev) => prev.filter((item) => item.id !== productId));
+        setCart((prev) => (Array.isArray(prev) ? prev : []).filter((item) => item.id !== productId));
     };
 
     const updateQuantity = (productId, newQuantity) => {
@@ -97,7 +110,7 @@ export const ShopProvider = ({ children }) => {
             return;
         }
         setCart((prev) =>
-            prev.map((item) =>
+            (Array.isArray(prev) ? prev : []).map((item) =>
                 item.id === productId ? { ...item, quantity: newQuantity } : item
             )
         );

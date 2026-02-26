@@ -44,7 +44,7 @@ const WishlistDrawer = () => {
                     <div className="flex items-center justify-between p-6 border-b border-gray-100">
                         <h2 className="text-xl font-bold flex items-center gap-2">
                             <Heart className="w-5 h-5 text-rose-500" />
-                            Favoris ({wishlist.length})
+                            Favoris ({Array.isArray(wishlist) ? wishlist.length : 0})
                         </h2>
                         <button
                             onClick={() => setIsWishlistOpen(false)}
@@ -56,7 +56,7 @@ const WishlistDrawer = () => {
 
                     {/* Items */}
                     <div className="flex-1 overflow-y-auto p-6 space-y-6">
-                        {wishlist.length === 0 ? (
+                        {(!Array.isArray(wishlist) || wishlist.length === 0) ? (
                             <div className="h-full flex flex-col items-center justify-center text-center space-y-4">
                                 <div className="w-16 h-16 bg-rose-50 rounded-full flex items-center justify-center text-rose-300">
                                     <Heart className="w-8 h-8" />

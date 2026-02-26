@@ -19,7 +19,7 @@ const Header = () => {
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
             </svg>
           </div>
-          <span className="text-xl font-bold text-gray-900 tracking-tight">Juis</span>
+          <span className="text-xl font-bold text-gray-900 tracking-tight">clothes</span>
         </Link>
 
         {/* Desktop Nav */}

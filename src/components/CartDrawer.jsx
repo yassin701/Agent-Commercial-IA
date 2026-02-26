@@ -9,10 +9,10 @@ const CartDrawer = () => {
     const drawerRef = useRef(null);
     const backdropRef = useRef(null);
 
-    const total = cart.reduce((sum, item) => {
+    const total = Array.isArray(cart) ? cart.reduce((sum, item) => {
         const price = item.negotiatedPrice || item.price || 0;
-        return sum + price * item.quantity;
-    }, 0);
+        return sum + price * (item.quantity || 0);
+    }, 0) : 0;
 
     useEffect(() => {
         if (isCartOpen) {
